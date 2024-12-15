@@ -1,6 +1,6 @@
 --[[	   				BGM SELECT MODULE
 ===================================================================
-Version: 1.1
+Version: 1.2
 Author: Cable Dorado 2 (CD2)
 Tested on: IKEMEN GO v0.98.2, v0.99.0 and 2024-09-25 Nightly Build
 Description:
@@ -101,6 +101,7 @@ txt_selMusicA = main.f_createTextImg(motif.select_info, "bgm_active") --New
 bgmActiveCount = 0 --New
 bgmActiveType = 'bgm_active' --New
 musicSelect = false --New
+backupStgActive = motif.select_info.stage_active_switchtime --New
 
 --;===========================================================
 --; STAGE MENU
@@ -113,6 +114,7 @@ function start.f_stageMenu() --Copy of Stage Menu function to make modifications
 		return
 	end
 	if not musicSelect then --If the BGM Select is not active (Stage Select cursor will be active)
+		motif.select_info.stage_active_switchtime = backupStgActive --restore stage sel active cursor
 		--Previous Stage
 		if main.f_input(main.t_players, {'$B'}) then
 			sndPlay(motif.files.snd_data, motif.select_info.stage_move_snd[1], motif.select_info.stage_move_snd[2])
@@ -132,6 +134,7 @@ function start.f_stageMenu() --Copy of Stage Menu function to make modifications
 			musicSelect = true
 		end
 	else --If you are in the BGM Select (Stage Select cursor will be inactive)
+		motif.select_info.stage_active_switchtime = 0 --inactive stage sel active cursor
 		--Previous BGM
 		if main.f_input(main.t_players, {'$B'}) then
 			sndPlay(motif.files.snd_data, motif.select_info.bgm_move_snd[1], motif.select_info.bgm_move_snd[2])
@@ -174,7 +177,7 @@ function start.f_stageMenu() --Copy of Stage Menu function to make modifications
 			else
 				bgmActiveType = 'bgm_active'
 			end
-				bgmActiveCount = 0
+			bgmActiveCount = 0
 		end
 	end
 	--draw music name
